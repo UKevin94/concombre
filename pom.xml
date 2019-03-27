@@ -72,6 +72,24 @@
             <groupId>org.squashtest.ta.galaxia</groupId>
             <artifactId>squash-tf-gherkin-maven-plugin</artifactId>
             <version>1.0.0-RELEASE</version>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-data-jpa</artifactId>
+				</dependency>
+
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-test</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-all</artifactId>
+					<version>1.9.5</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
             <configuration>
                 <featuresList>${ta.feature}</featuresList>
                 <squashRoot>squash</squashRoot>
