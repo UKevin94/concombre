@@ -59,23 +59,23 @@ public class AccountServiceSteps {
         this.startingTime = Date.from(Instant.now());
     }
 
-    @Given("^my account balance is at €(\\d+.\\d+)$")
-    public void my_account_balance_is_at_€(float amount) throws Throwable {
+    @Given("^my account balance is at E(\\d+.\\d+)$")
+    public void my_account_balance_is_at_E(float amount) throws Throwable {
         Account account = new Account(accountId);
         account.updateBalance(amount);
         when(accountDAOMock.getAccountById(accountId)).thenReturn(account);
     }
 
-    @When("^I make a deposit of €(\\d+.\\d+) to my account$")
-    public void i_make_a_deposit_of_€_to_my_account(float amount) throws Throwable {
+    @When("^I make a deposit of E(\\d+.\\d+) to my account$")
+    public void i_make_a_deposit_of_E_to_my_account(float amount) throws Throwable {
         accountService.makeDepositOnAccount(accountId, amount);
         Operation expected = new Operation(accountId,amount,OperationType.DEPOSIT);
         this.expectedOperationList.add(expected);
         verify(operationDAOMock, times(1)).persistOperation(argThat(new OperationMatcher(expected)));
     }
 
-    @Then("^the new balance of my account is €(\\d+.\\d+)$")
-    public void the_new_balance_of_my_account_is_€(float amount) throws Throwable {
+    @Then("^the new balance of my account is E(\\d+.\\d+)$")
+    public void the_new_balance_of_my_account_is_E(float amount) throws Throwable {
         Assert.assertEquals(amount, accountService.getCurrentBalance(accountId), 0.001);
     }
 
@@ -84,16 +84,16 @@ public class AccountServiceSteps {
         operationList = accountService.getAccountHistory(accountId);
     }
 
-    @When("^I retrieve €(\\d+.\\d+) from my account$")
-    public void i_retrieve_€_from_my_account(float amount) throws Throwable {
+    @When("^I retrieve E(\\d+.\\d+) from my account$")
+    public void i_retrieve_E_from_my_account(float amount) throws Throwable {
         accountService.retrieveFromAccount(accountId, amount);
         Operation expected = new Operation(accountId,amount,OperationType.WITHDRAWAL);
         this.expectedOperationList.add(expected);
         verify(operationDAOMock, times(1)).persistOperation(argThat(new OperationMatcher(expected)));
     }
 
-    @Then("^I get a listing of (\\d+) deposit of €(\\d+.\\d+) then (\\d+) withdrawal €(\\d+.\\d+) of today$")
-    public void i_get_a_listing_of_deposit_of_€_then_withdrawal_€_of_today(int nbOfDeposits, float amountOfDeposit, int nbOfWithdrawals, float amountOfWithdrawal) throws Throwable {
+    @Then("^I get a listing of (\\d+) deposit of E(\\d+.\\d+) then (\\d+) withdrawal E(\\d+.\\d+) of today$")
+    public void i_get_a_listing_of_deposit_of_E_then_withdrawal_E_of_today(int nbOfDeposits, float amountOfDeposit, int nbOfWithdrawals, float amountOfWithdrawal) throws Throwable {
         when(operationDAOMock.getOperationByAccount(accountId)).thenReturn(this.expectedOperationList);
         operationList = accountService.getAccountHistory(accountId);
         Assert.assertEquals("Number of operations",nbOfDeposits+nbOfWithdrawals,operationList.size());
