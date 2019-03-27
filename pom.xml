@@ -60,15 +60,65 @@
 		</dependency>
 
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
+<build>
+    <plugins>
+	<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
-		<testResources>
+        <!-- Configuration of the Squash TA framework used by the project -->
+        <plugin>
+            <groupId>org.squashtest.ta.galaxia</groupId>
+            <artifactId>squash-tf-gherkin-maven-plugin</artifactId>
+            <version>${ta.cucumber.runner.version}</version>
+            <configuration>
+                <featuresList>${ta.feature}</featuresList>
+                <squashRoot>squash</squashRoot>
+                <!-- DryRunOptions for dryrun goal only -->
+                <additionnalDryRunChecks>true</additionnalDryRunChecks>
+
+                <!-- Define exporters -->
+                <gkexporters>
+                    <exporter
+                        implementation="org.squashtest.ta.commons.exporter.surefire.SurefireSuiteResultExporter">
+                        <jenkinsAttachmentMode>${ta.jenkins.attachment.mode}</jenkinsAttachmentMode>
+                    </exporter>
+                    <exporter implementation="org.squashtest.ta.commons.exporter.html.HtmlSuiteResultExporter"/>
+                    <!--
+                        <exporter implementation="org.squashtest.ta.gherkin.exporter.HtmlGherkinSuiteResultExporter" />
+                    -->
+                </gkexporters>
+
+                <!-- Define configurers -->
+                <gkconfigurers>
+                    <configurer implementation="org.squashtest.ta.maven.TmCallBack">
+                        <!-- <tmCallBack> -->
+                        <endpointURL>${status.update.events.url}</endpointURL>
+                        <executionExternalId>${squash.ta.external.id}</executionExternalId>
+                        <jobName>${jobname}</jobName>
+                        <hostName>${hostname}</hostName>
+                        <endpointLoginConfFile>${squash.ta.conf.file}</endpointLoginConfFile>
+                        <reportBaseUrl>${ta.tmcallback.reportbaseurl}</reportBaseUrl>
+                        <jobExecutionId>${ta.tmcallback.jobexecutionid}</jobExecutionId>
+                        <reportName>${ta.tmcallback.reportname}</reportName>
+                        <!-- </tmCallBack> -->
+                    </configurer>
+                </gkconfigurers>
+            </configuration>
+
+            <executions>
+                <execution>
+                    <goals>
+                    <!-- to execute feature files -->
+                        <goal>run</goal>
+                        <!-- to check feature files are runable (DryRun) -->
+                        <goal>dryrun</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+	<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>
@@ -79,6 +129,21 @@
 				</includes>
 			</testResource>
 		</testResources>
-	</build>
+</build>
+
+<!-- Squash TA maven plugin repository -->
+<pluginRepositories>
+    <pluginRepository>
+    <id>org.squashtest.plugins.release</id>
+    <name>squashtest.org</name>
+    <url>http://repo.squashtest.org/maven2/releases</url>
+    <snapshots>
+    <enabled>false</enabled>
+    </snapshots>
+    <releases>
+    <enabled>true</enabled>
+    </releases>
+    </pluginRepository>
+</pluginRepositories>
 
 </project>
